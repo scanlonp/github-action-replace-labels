@@ -1,7 +1,9 @@
 name: replace-labels
 on: 
   workflow_dispatch: {}
+permissions: write-all
 jobs:
+
   call-action:
     runs-on: ubuntu-latest
     steps:
