@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as github from '@actions/github';
+//import * as github from '@actions/github';
 
 async function run() {
   const token: string = core.getInput('github-token');
@@ -8,13 +8,17 @@ async function run() {
   //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
 
   //console.log(labelToReplace, labelToReplaceWith);
+
+  if (token) console.log('token exists');
+
   console.log(labelReplacement);
 
-  const octokit = github.getOctokit(token);
-  const repo = github.context.repo;
+  //const octokit = github.getOctokit(token);
+  //const repo = github.context.repo;
 
   //await updateLabel(labelToReplace, labelToReplaceWith);
 
+  /*
   async function updateLabel(label: string, newLabel: string) {
     console.log(`Updating label ${label} to ${newLabel}`);
     await octokit.rest.issues.updateLabel({
@@ -24,7 +28,9 @@ async function run() {
       new_name: newLabel,
     });
   }
+  */
 }
+
 
 /**
  * Renders a TypeScript list based on what we expect the list to look like in yaml.
