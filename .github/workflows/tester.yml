@@ -11,5 +11,10 @@ jobs:
         id: replace-labels
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          label-to-replace: abc
-          label-to-replace-with: xyz 
+          label-replacement: > 
+            { 
+              "a": "b", 
+              "c": "d" 
+            }
+          #label-to-replace: abc
+          #label-to-replace-with: xyz 

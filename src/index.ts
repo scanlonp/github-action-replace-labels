@@ -3,15 +3,17 @@ import * as github from '@actions/github';
 
 async function run() {
   const token: string = core.getInput('github-token');
-  const labelToReplace: string = core.getInput('label-to-replace');
-  const labelToReplaceWith: string = core.getInput('label-to-replace-with');
+  const labelReplacement: string = JSON.parse(core.getInput('label-replacement', { required: true }));
+  //const labelToReplace: string = core.getInput('label-to-replace');
+  //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
 
-  console.log(labelToReplace, labelToReplaceWith);
+  //console.log(labelToReplace, labelToReplaceWith);
+  console.log(labelReplacement);
 
   const octokit = github.getOctokit(token);
   const repo = github.context.repo;
 
-  await updateLabel(labelToReplace, labelToReplaceWith);
+  //await updateLabel(labelToReplace, labelToReplaceWith);
 
   async function updateLabel(label: string, newLabel: string) {
     console.log(`Updating label ${label} to ${newLabel}`);
