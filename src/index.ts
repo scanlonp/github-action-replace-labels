@@ -34,13 +34,14 @@ async function run() {
   for (const label in labelReplacement) {
     if (!(allLabelNames.includes(label))) {
       errors.push(`Label ${label} not found`);
-    } else {
-      console.log(`found label ${label}`);
+    }
+    if (allLabelNames.includes(labelReplacement[label])) {
+      errors.push(`Label ${labelReplacement[label]} already exists in repo`);
     }
   }
 
   if (errors.length > 0) {
-    throw new Error(`Some labels not found:${EOL}${errors.join(EOL)}`);
+    throw new Error(`Errors:${EOL}${errors.join(EOL)}`);
   }
 
   /*
