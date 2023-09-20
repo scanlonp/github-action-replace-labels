@@ -15,7 +15,4 @@ jobs:
             {
               "xyz" : "nnn",
               "@aws-cdk/core": "core",
-              "beotch": "mmm",
-              "hello": "world",
-              "wontfax": "invalid"
             }
