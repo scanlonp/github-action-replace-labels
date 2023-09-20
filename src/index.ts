@@ -9,9 +9,9 @@ async function run() {
 
   //console.log(labelToReplace, labelToReplaceWith);
 
-  if (token) console.log('token exists');
+  //if (token) console.log('token exists');
 
-  console.log(labelReplacement);
+  //console.log(labelReplacement);
 
   //console.log(labelReplacement.a);
 
@@ -19,14 +19,14 @@ async function run() {
   const octokit = github.getOctokit(token);
   const repo = github.context.repo;
 
-  /*
-  await Object.keys(labelReplacement).forEach((label:string)=>{
-    await updateLabel(label, labelReplacement[label]);
-  });
-  */
-
   for (const label in labelReplacement) {
-    await updateLabel(label, labelReplacement[label]);
+    try {
+      await updateLabel(label, labelReplacement[label]);
+    } catch (error) {
+      console.log(error);
+      console.log(typeof(error));
+      console.log();
+    }
   }
 
   async function updateLabel(label: string, newLabel: string) {
@@ -39,18 +39,6 @@ async function run() {
     });
   }
 }
-
-
-/**
- * Renders a TypeScript list based on what we expect the list to look like in yaml.
- * We expect to see something like "[item1,item2]". GitHub will return '' if the
- * input is not defined, so treating the empty string like undefined.
- */
-/*
-function renderListInput(rawInput: string): string[] {
-  return (rawInput === '' || rawInput === '[]') ? [] : rawInput.slice(1, -1).split(',');
-}
-*/
 
 
 run().catch(error => {
