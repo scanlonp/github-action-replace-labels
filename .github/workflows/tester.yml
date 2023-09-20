@@ -14,5 +14,5 @@ jobs:
           label-replacement: >
             {
               "xyz" : "nnn",
-              "@aws-cdk/core": "core",
+              "@aws-cdk/core": "core"
             }
