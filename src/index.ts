@@ -19,10 +19,12 @@ async function run() {
   const octokit = github.getOctokit(token);
   const repo = github.context.repo;
 
-  await octokit.rest.issues.listLabelsForRepo({
+  const allLabels = await octokit.rest.issues.listLabelsForRepo({
     owner: repo.owner,
     repo: repo.repo,
   });
+
+  console.log(allLabels);
 
   /*
   for (const label in labelReplacement) {
