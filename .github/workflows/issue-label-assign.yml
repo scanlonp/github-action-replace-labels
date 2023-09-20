@@ -1,0 +1,286 @@
+name: "Set Issue Label and Assignee"
+on:
+ issues:
+    types: [opened, edited]
+ pull_request_target:
+    types: [opened]
+
+jobs:
+  issue-triage-manager:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-github-ops/aws-issue-triage-manager@main
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          target: "issues"
+          excluded-expressions: "[CDK CLI Version|TypeScript|Java|Python]"
+          included-labels: "[needs-triage]"
+          excluded-labels: "[p1|p2|p0|effort-small|effort-medium|effort-large|guidance]"
+          default-area: ${{ env.OSDS_DEVS }}
+          parameters: ${{ env.AREA_PARAMS }}
+          affixes: ${{ env.AREA_AFFIXES }}
+  guidance-triage-manager:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-github-ops/aws-issue-triage-manager@main
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          target: "issues"
+          excluded-expressions: "[CDK CLI Version|TypeScript|Java|Python]"
+          area-is-keyword: true
+          included-labels: "[guidance]"
+          default-area: ${{ env.OSDS_DEVS }}
+          parameters: >
+            [{"area":"guidance","keywords":["guidancekeyword"]}]
+  pr-triage-manager:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-github-ops/aws-issue-triage-manager@main
+        with:
+          github-token: "${{ secrets.PROJEN_GITHUB_TOKEN }}"
+          target: "pull-requests"
+          area-is-keyword: true
+          default-area: >
+            {"reviewers":{"teamReviewers":["aws-cdk-owners"]}}
+          parameters: >
+            [{"area":"pullrequests","keywords":["pullrequestkeyword"]}]
+
+
+env:
+ OSDS_DEVS: >
+           {
+             "assignees":["scanlonp"]
+           }
+
+ AREA_AFFIXES: >
+           {
+             "prefixes":["@aws-cdk/", "aws-cdk-lib"]
+           }
+
+ AREA_PARAMS: >
+          [
+            {"area":"package/tools","keywords":["cli","command line","init","synth","diff","bootstrap"],"labels":["package/tools"],"enableGlobalAffixes":false},
+            {"area":"package/alexa-ask","keywords":["alexa-ask","alexa"],"labels":["package/alexa-ask"]},
+            {"area":"package/assertions","keywords":["assertions"],"labels":["package/assertions"]},
+            {"area":"package/assets","keywords":["assets","staging"],"labels":["package/assets"]},
+            {"area":"package/aws-accessanalyzer","keywords":["aws-accessanalyzer","accessanalyzer"],"labels":["package/aws-accessanalyzer"]},
+            {"area":"package/aws-acmpca","keywords":["aws-acmpca","acmpca","certificateauthority"],"labels":["package/aws-acmpca"]},
+            {"area":"package/aws-amazonmq","keywords":["aws-amazonmq","amazonmq"],"labels":["package/aws-amazonmq"]},
+            {"area":"package/aws-amplify","keywords":["aws-amplify","amplify","GitHubSourceCodeProvider","CodeCommitSourceCodeProvider","GitLabSourceCodeProvider"],"labels":["package/aws-amplify"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-apigateway","keywords":["aws-apigateway","api-gateway"],"labels":["package/aws-apigateway"]},
+            {"area":"package/aws-apigatewayv2","keywords":["aws-apigatewayv2","api-gateway-v2","apimapping","httpapi","httproute","httpstage","httpauthorizer","httpintegration"],"labels":["package/aws-apigatewayv2"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-apigatewayv2-authorizers","keywords":["aws-apigatewayv2-authorizers","apigatewayv2-authorizers"],"labels":["package/aws-apigatewayv2-authorizers"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-apigatewayv2-integrations","keywords":["aws-apigatewayv2-integrations","apigateway-v2-integrations","httpalbintegration","httpnlbintegration","httpproxyintegration","lambdaproxyintegration","httpservicediscoveryintegration","lambdawebsocketintegration"],"labels":["package/aws-apigatewayv2-integrations"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-appconfig","keywords":["aws-appconfig","app-config"],"labels":["package/aws-appconfig"]},
+            {"area":"package/aws-appflow","keywords":["aws-appflow","appflow"],"labels":["package/aws-appflow"]},
+            {"area":"package/aws-appintegrations","keywords":["aws-appintegrations","appintegrations"],"labels":["package/aws-appintegrations"]},
+            {"area":"package/aws-applicationautoscaling","keywords":["aws-applicationautoscaling","application-autoscaling","scalabletarget"],"labels":["package/aws-applicationautoscaling"]},
+            {"area":"package/aws-applicationinsights","keywords":["aws-applicationinsights","application-insights"],"labels":["package/aws-applicationinsights"]},
+            {"area":"package/aws-appmesh","keywords":["aws-appmesh","app-mesh","GatewayRoute","VirtualGateway","VirtualNode","VirtualRouter","VirtualService"],"labels":["package/aws-appmesh"]},
+            {"area":"package/aws-apprunner","keywords":["apprunner","aws-apprunner"],"labels":["package/aws-apprunner"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-appstream","keywords":["aws-appstream","app-stream"],"labels":["package/aws-appstream"]},
+            {"area":"package/aws-appsync","keywords":["aws-appsync","app-sync","appsyncfunction","graphqlapi","dynamodbdatasource","lambdadatasource","nonedatasource","rdsdatasource","resolver"],"labels":["package/aws-appsync"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-athena","keywords":["aws-athena","athena","cfndatacatalog","cfnnamedquery","cfnworkgroup"],"labels":["package/aws-athena"]},
+            {"area":"package/aws-auditmanager","keywords":["aws-auditmanager","auditmanager"],"labels":["package/aws-auditmanager"]},
+            {"area":"package/aws-autoscaling","keywords":["aws-autoscaling","auto-scaling","AutoScalingGroup","LifescycleHook","scheduledaction"],"labels":["package/aws-autoscaling"]},
+            {"area":"package/aws-autoscaling-api","keywords":["aws-autoscaling-api","autoscaling-api"],"labels":["package/aws-autoscaling-api"]},
+            {"area":"package/aws-autoscaling-common","keywords":["aws-autoscaling-common","autoscaling-common","arbitraryintervals","completescalinginterval","scalinginterval"],"labels":["package/aws-autoscaling-common"]},
+            {"area":"package/aws-autoscaling-hooktargets","keywords":["aws-autoscaling-hooktargets","autoscaling hooktargets","functionhook","queuehook","topichook"],"labels":["package/aws-autoscaling-hooktargets"]},
+            {"area":"package/aws-autoscalingplans","keywords":["aws-autoscalingplans","autoscaling-plans"],"labels":["package/aws-autoscalingplans"]},
+            {"area":"package/aws-backup","keywords":["aws-backup","backup","backupselection","backupvault","backupplan"],"labels":["package/aws-backup"]},
+            {"area":"package/aws-batch","keywords":["aws-batch","batch","computeenvironment","jobdefinition","jobqueue"],"labels":["package/aws-batch"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-budgets","keywords":["aws-budgets","budgets"],"labels":["package/aws-budgets"]},
+            {"area":"package/aws-cassandra","keywords":["aws-cassandra","cassandra"],"labels":["package/aws-cassandra"]},
+            {"area":"package/aws-ce","keywords":["aws-ce","costexplorer","cfncostcategory"],"labels":["package/aws-ce"]},
+            {"area":"package/aws-certificatemanager","keywords":["aws-certificatemanager","certificate-manager","dnsvalidatedcertificate","acm"],"labels":["package/aws-certificatemanager"]},
+            {"area":"package/aws-chatbot","keywords":["aws-chatbot","chatbot","slackchannelconfiguration"],"labels":["package/aws-chatbot"]},
+            {"area":"package/aws-cloud9","keywords":["aws-cloud9","cloud9","ec2environment"],"labels":["package/aws-cloud9"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-cloudformation","keywords":["aws-cloudformation","cloudformation"],"labels":["package/aws-cloudformation"]},
+            {"area":"package/aws-cloudfront","keywords":["aws-cloudfront","cloudfront","cachepolicy","distribution","cloudfrontwebdistribution"],"labels":["package/aws-cloudfront"]},
+            {"area":"package/aws-cloudfront-origins","keywords":["aws-cloudfront-origins","cloudfront-origins"],"labels":["package/aws-cloudfront-origins"]},
+            {"area":"package/aws-cloudtrail","keywords":["aws-cloudtrail","cloud-trail","trail"],"labels":["package/aws-cloudtrail"]},
+            {"area":"package/aws-cloudwatch","keywords":["aws-cloudwatch","cloudwatch","compositealarm","dashboard"],"labels":["package/aws-cloudwatch"]},
+            {"area":"package/aws-cloudwatch-actions","keywords":["aws-cloudwatch-actions","cloudwatch-actions","applicationscalingaction","autoscalingaction","ec2action","snsaction"],"labels":["package/aws-cloudwatch-actions"]},
+            {"area":"package/aws-codeartifact","keywords":["aws-codeartifact","code-artifact"],"labels":["package/aws-codeartifact"]},
+            {"area":"package/aws-codebuild","keywords":["aws-codebuild","code-build","bitbucketsourcecredentials","githubenterprisesourcecredentials","githubsourcecredentials","pipelineproject","reportgroup","untrustedcodeboundarypolicy"],"labels":["package/aws-codebuild"]},
+            {"area":"package/aws-codecommit","keywords":["aws-codecommit","code-commit"],"labels":["package/aws-codecommit"]},
+            {"area":"package/aws-codedeploy","keywords":["aws-codedeploy","code-deploy","customlambdadeploymentconfig","ecsapplication","lambdaapplication","lambdadeploymentgroup","serverapplication"],"labels":["package/aws-codedeploy"]},
+            {"area":"package/aws-codeguruprofiler","keywords":["aws-codeguruprofiler","codeguru-profiler","profilinggroup"],"labels":["package/aws-codeguruprofiler"]},
+            {"area":"package/aws-codegurureviewer","keywords":["aws-codegurureviewer","codeguru-reviewer"],"labels":["package/aws-codegurureviewer"]},
+            {"area":"package/aws-codepipeline","keywords":["aws-codepipeline","code-pipeline"],"labels":["package/aws-codepipeline"]},
+            {"area":"package/aws-codepipeline-actions","keywords":["aws-codepipeline-actions","codepipeline-actions","jenkinsprovider"],"labels":["package/aws-codepipeline-actions"]},
+            {"area":"package/aws-codestar","keywords":["aws-codestar","codestar","githubrepository"],"labels":["package/aws-codestar"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-codestarconnections","keywords":["aws-codestarconnections","codestar-connections"],"labels":["package/aws-codestarconnections"]},
+            {"area":"package/aws-codestarnotifications","keywords":["aws-codestarnotifications","codestar-notifications"],"labels":["package/aws-codestarnotifications"]},
+            {"area":"package/aws-cognito","keywords":["aws-cognito","cognito","userpool","userpoolclient","userpooldomain"],"labels":["package/aws-cognito"]},
+            {"area":"package/aws-cognito-identitypool","keywords":["aws-cognito-identitypool","cognito-identitypool"],"labels":["package/aws-cognito-identitypool"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-config","keywords":["aws-config","config","accesskeysrotated","CloudFormationStackDriftDetectionCheck","CloudFormationStackNotificationCheck","managedrule"],"labels":["package/aws-config"]},
+            {"area":"package/aws-customerprofiles","keywords":["aws-customerprofiles","customerprofiles"],"labels":["package/aws-customerprofiles"]},
+            {"area":"package/aws-databrew","keywords":["aws-databrew","databrew"],"labels":["package/aws-databrew"]},
+            {"area":"package/aws-datapipeline","keywords":["aws-datapipeline","datapipeline"],"labels":["package/aws-datapipeline"]},
+            {"area":"package/aws-datasync","keywords":["aws-datasync","datasync"],"labels":["package/aws-datasync"]},
+            {"area":"package/aws-dax","keywords":["aws-dax","dax"],"labels":["package/aws-dax"]},
+            {"area":"package/aws-detective","keywords":["aws-detective","detective"],"labels":["package/aws-detective"]},
+            {"area":"package/aws-devopsguru","keywords":["aws-devopsguru","devopsguru"],"labels":["package/aws-devopsguru"]},
+            {"area":"package/aws-directoryservice","keywords":["aws-directoryservice","directory-service"],"labels":["package/aws-directoryservice"]},
+            {"area":"package/aws-dlm","keywords":["aws-dlm","dlm"],"labels":["package/aws-dlm"]},
+            {"area":"package/aws-dms","keywords":["aws-dms","dms"],"labels":["package/aws-dms"]},
+            {"area":"package/aws-docdb","keywords":["aws-docdb","docdb"],"labels":["package/aws-docdb"]},
+            {"area":"package/aws-dynamodb","keywords":["aws-dynamodb","dynamo-db"],"labels":["package/aws-dynamodb"]},
+            {"area":"package/aws-ec2","keywords":["aws-ec2","ec2","vpc","privatesubnet","publicsubnet","vpngateway","vpnconnection","networkacl"],"labels":["package/aws-ec2"]},
+            {"area":"package/aws-ecr","keywords":["aws-ecr","ecr"],"labels":["package/aws-ecr"]},
+            {"area":"package/aws-ecr-assets","keywords":["aws-ecr-assets","ecrassets"],"labels":["package/aws-ecr-assets"]},
+            {"area":"package/aws-ecs","keywords":["aws-ecs","ecs"],"labels":["package/aws-ecs"]},
+            {"area":"package/aws-ecs-patterns","keywords":["aws-ecs-patterns","ecs-patterns"],"labels":["package/aws-ecs-patterns"]},
+            {"area":"package/aws-efs","keywords":["aws-efs","efs","accesspoint"],"labels":["package/aws-efs"]},
+            {"area":"package/aws-eks","keywords":["aws-eks","eks","fargateprofile","fargatecluster"],"labels":["package/aws-eks"]},
+            {"area":"package/aws-elasticache","keywords":["aws-elasticache","elastic-cache"],"labels":["package/aws-elasticache"]},
+            {"area":"package/aws-elasticbeanstalk","keywords":["aws-elasticbeanstalk","elastic-beanstalk"],"labels":["package/aws-elasticbeanstalk"]},
+            {"area":"package/aws-elasticloadbalancing","keywords":["aws-elasticloadbalancing","elastic-loadbalancing","elb"],"labels":["package/aws-elasticloadbalancing"]},
+            {"area":"package/aws-elasticloadbalancingv2","keywords":["aws-elasticloadbalancingv2","elastic-loadbalancing-v2","elbv2","applicationlistener","applicationloadbalancer","applicationtargetgroup","networklistener","networkloadbalancer","networktargetgroup"],"labels":["package/aws-elasticloadbalancingv2"]},
+            {"area":"package/aws-elasticloadbalancingv2-actions","keywords":["aws-elasticloadbalancingv2-actions","elasticloadbalancingv2-actions"],"labels":["package/aws-elasticloadbalancingv2-actions"]},
+            {"area":"package/aws-elasticloadbalancingv2-targets","keywords":["aws-elasticloadbalancingv2-targets","elbv2-targets","elbv2-targets"],"labels":["package/aws-elasticloadbalancingv2-targets"]},
+            {"area":"package/aws-elasticsearch","keywords":["aws-elasticsearch","elastic-search"],"labels":["package/aws-elasticsearch"]},
+            {"area":"package/aws-emr","keywords":["aws-emr","emr"],"labels":["package/aws-emr"]},
+            {"area":"package/aws-emrcontainers","keywords":["(aws-emrcontainers)","(emrcontainers)"],"labels":["package/aws-emrcontainers"]},
+            {"area":"package/aws-events","keywords":["aws-events","events","event-bridge","eventbus"],"labels":["package/aws-events"]},
+            {"area":"package/aws-events-targets","keywords":["aws-events-targets","events-targets","events targets"],"labels":["package/aws-events-targets"]},
+            {"area":"package/aws-eventschemas","keywords":["aws-eventschemas","event schemas"],"labels":["package/aws-eventschemas"]},
+            {"area":"package/aws-finspace","keywords":["(aws-finspace)","(finspace)"],"labels":["package/aws-finspace"]},
+            {"area":"package/aws-fis","keywords":["(aws-fis)","(fis)"],"labels":["package/aws-fis"]},
+            {"area":"package/aws-fms","keywords":["aws-fms","fms"],"labels":["package/aws-fms"]},
+            {"area":"package/aws-frauddetector","keywords":["(aws-frauddetector)","(frauddetector)"],"labels":["package/aws-frauddetector"]},
+            {"area":"package/aws-fsx","keywords":["aws-fsx","fsx","lustrefilesystem"],"labels":["package/aws-fsx"]},
+            {"area":"package/aws-gamelift","keywords":["aws-gamelift","gamelift"],"labels":["package/aws-gamelift"]},
+            {"area":"package/aws-globalaccelerator","keywords":["aws-globalaccelerator","global-accelerator"],"labels":["package/aws-globalaccelerator"]},
+            {"area":"package/aws-globalaccelerator-endpoints","keywords":["aws-globalaccelerator-endpoints","globalaccelerator-endpoints"],"labels":["package/aws-globalaccelerator-endpoints"]},
+            {"area":"package/aws-glue","keywords":["aws-glue","glue"],"labels":["package/aws-glue"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-greengrass","keywords":["aws-greengrass","green-grass"],"labels":["package/aws-greengrass"]},
+            {"area":"package/aws-greengrassv2","keywords":["aws-greengrassv2","greengrassv2"],"labels":["package/aws-greengrassv2"]},
+            {"area":"package/aws-groundstation","keywords":["aws-groundstation","groundstation"],"labels":["package/aws-groundstation"]},
+            {"area":"package/aws-guardduty","keywords":["aws-guardduty","guardduty"],"labels":["package/aws-guardduty"]},
+            {"area":"package/aws-iam","keywords":["aws-iam","iam","managedpolicy","policy","role"],"labels":["package/aws-iam"]},
+            {"area":"package/aws-imagebuilder","keywords":["aws-imagebuilder","imagebuilder"],"labels":["package/aws-imagebuilder"]},
+            {"area":"package/aws-inspector","keywords":["aws-inspector","inspector"],"labels":["package/aws-inspector"]},
+            {"area":"package/aws-iot","keywords":["internet-of-things","aws-iot","iot"],"labels":["package/aws-iot"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-iot-actions","keywords":["aws-iot-actions","iot-actions"],"labels":["package/aws-iot-actions"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-iot1click","keywords":["aws-iot1click","iot1click"],"labels":["package/aws-iot1click"]},
+            {"area":"package/aws-iotanalytics","keywords":["aws-iotanalytics","iotanalytics"],"labels":["package/aws-iotanalytics"]},
+            {"area":"package/aws-iotevents","keywords":["aws-iotevents","iotevents"],"labels":["package/aws-iotevents"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-iotevents-actions","keywords":["aws-iotevents","iotevents-actions"],"labels":["package/aws-iotevents-actions"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-iotfleethub","keywords":["aws-iotfleethub","iotfleethub"],"labels":["package/aws-iotfleethub"]},
+            {"area":"package/aws-iotsitewise","keywords":["aws-iotsitewise","iot-site-wise"],"labels":["package/aws-iotsitewise"]},
+            {"area":"package/aws-iotthingsgraph","keywords":["flow-template","aws-iotthingsgraph","iotthingsgraph"],"labels":["package/aws-iotthingsgraph"]},
+            {"area":"package/aws-iotwireless","keywords":["aws-iotwireless","iotwireless"],"labels":["package/aws-iotwireless"]},
+            {"area":"package/aws-ivs","keywords":["interactive-video-service","aws-ivs","ivs"],"labels":["package/aws-ivs"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-kendra","keywords":["aws-kendra","kendra"],"labels":["package/aws-kendra"]},
+            {"area":"package/aws-kinesis","keywords":["stream","aws-kinesis","kinesis"],"labels":["package/aws-kinesis"]},
+            {"area":"package/aws-kinesisanalytics","keywords":["aws-kinesisanalytics","kinesisanalytics","kinesis-analytics"],"labels":["package/aws-kinesisanalytics"]},
+            {"area":"package/aws-kinesisanalytics-flink","keywords":["aws-kinesisanalytics-flink","kinesisanalytics-flink"],"labels":["package/aws-kinesisanalytics-flink"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-kinesisfirehose","keywords":["aws-kinesisfirehose","kinesisfirehose"],"labels":["package/aws-kinesisfirehose"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-kinesisfirehose-destinations","keywords":["aws-kinesisfirehose-destinations","kinesisfirehose-destinations"],"labels":["package/aws-kinesisfirehose"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-kms","keywords":["key-management-service","aws-kms","kms"],"labels":["package/aws-kms"]},
+            {"area":"package/aws-lakeformation","keywords":["data-lake","aws-lakeformation","lakeformation"],"labels":["package/aws-lakeformation"]},
+            {"area":"package/aws-lambda","keywords":["function","layerversion","aws-lambda","lambda"],"labels":["package/aws-lambda"]},
+            {"area":"package/aws-lambda-destinations","keywords":["aws-lambda-destinations","lambda-destinations"],"labels":["package/aws-lambda-destinations"]},
+            {"area":"package/aws-lambda-event-sources","keywords":["dynamoeventsource","aws-lambda-event-sources","lambda-event-sources","apieventsource","kinesiseventsource"],"labels":["package/aws-lambda-event-sources"]},
+            {"area":"package/aws-lambda-go","keywords":["aws-lambda-go","lambda-go"],"labels":["package/aws-lambda-go"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-lambda-nodejs","keywords":["nodejsfunction","aws-lambda-nodejs","lambda-nodejs"],"labels":["package/aws-lambda-nodejs"]},
+            {"area":"package/aws-lambda-python","keywords":["aws-lambda-python","lambda-python","pythonfunction"],"labels":["package/aws-lambda-python"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-licensemanager","keywords":["aws-licensemanager","licensemanager"],"labels":["package/aws-licensemanager"]},
+            {"area":"package/aws-logs","keywords":["loggroup","aws-logs","logs","logretention"],"labels":["package/aws-logs"]},
+            {"area":"package/aws-logs-destinations","keywords":["aws-logs-destinations","lambdadestination","kinesisdestination","logs-destinations"],"labels":["package/aws-logs-destinations"]},
+            {"area":"package/aws-lookoutmetrics","keywords":["aws-lookoutmetrics","lookoutmetrics"],"labels":["package/aws-lookoutmetrics"]},
+            {"area":"package/aws-lookoutvision","keywords":["aws-lookoutvision","lookoutvision"],"labels":["package/aws-lookoutvision"]},
+            {"area":"package/aws-macie","keywords":["aws-macie","macie"],"labels":["package/aws-macie"]},
+            {"area":"package/aws-managedblockchain","keywords":["aws-managedblockchain","managedblockchain"],"labels":["package/aws-managedblockchain"]},
+            {"area":"package/aws-mediaconnect","keywords":["aws-mediaconnect","mediaconnect"],"labels":["package/aws-mediaconnect"]},
+            {"area":"package/aws-mediaconvert","keywords":["aws-mediaconvert","mediaconvert"],"labels":["package/aws-mediaconvert"]},
+            {"area":"package/aws-medialive","keywords":["aws-medialive","medialive"],"labels":["package/aws-medialive"]},
+            {"area":"package/aws-mediastore","keywords":["aws-mediastore","mediastore","elemental"],"labels":["package/aws-mediastore"]},
+            {"area":"package/aws-mediapackage","keywords":["aws-mediapackage","mediapackage"],"labels":["package/aws-mediapackage"]},
+            {"area":"package/aws-msk","keywords":["aws-msk","kafka","msk","managed-streaming"],"labels":["package/aws-msk"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-mwaa","keywords":["aws-mwaa","mwaa"],"labels":["package/aws-mwaa"]},
+            {"area":"package/aws-neptune","keywords":["aws-neptune","neptune"],"labels":["package/aws-neptune"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-networkfirewall","keywords":["aws-networkfirewall","networkfirewall"],"labels":["package/aws-networkfirewall"]},
+            {"area":"package/aws-networkmanager","keywords":["aws-networkmanager","networkmanager","globalnetwork"],"labels":["package/aws-networkmanager"]},
+            {"area":"package/aws-nimblestudio","keywords":["aws-nimblestudio","nimblestudio"],"labels":["package/aws-nimblestudio"]},
+            {"area":"package/aws-opensearchservice","keywords":["aws-opensearchservice","opensearchservice","aws-opensearch","opensearch"],"labels":["package/aws-opensearch"]},
+            {"area":"package/aws-opsworks","keywords":["aws-opsworks","opsworks"],"labels":["package/aws-opsworks"]},
+            {"area":"package/aws-opsworkscm","keywords":["aws-opsworkscm","opsworkscm"],"labels":["package/aws-opsworkscm"]},
+            {"area":"package/aws-personalize","keywords":["aws-personalize","personalize"],"labels":["package/aws-personalize"]},
+            {"area":"package/aws-pinpoint","keywords":["aws-pinpoint","pinpoint"],"labels":["package/aws-pinpoint"]},
+            {"area":"package/aws-pinpointemail","keywords":["aws-pinpointemail","pinpointemail"],"labels":["package/aws-pinpointemail"]},
+            {"area":"package/aws-qldb","keywords":["aws-qldb","qldb"],"labels":["package/aws-qldb"]},
+            {"area":"package/aws-quicksight","keywords":["aws-quicksight","quicksight"],"labels":["package/aws-quicksight"]},
+            {"area":"package/aws-ram","keywords":["aws-ram","ram", "resource-access-manager"],"labels":["package/aws-ram"]},
+            {"area":"package/aws-rds","keywords":["aws-rds","rds", "database-cluster","database-instance"],"labels":["package/aws-rds"]},
+            {"area":"package/aws-redshift","keywords":["aws-redshift","redshift"],"labels":["package/aws-redshift"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-resourcegroups","keywords":["resourcegroups","aws-resourcegroups"],"labels":["package/aws-resourcegroups"]},
+            {"area":"package/aws-robomaker","keywords":["aws-robomaker","robomaker","robot"],"labels":["package/aws-robomaker"]},
+            {"area":"package/aws-route53","keywords":["aws-route53","route53","recordset","record","hostedzone"],"labels":["package/aws-route53"]},
+            {"area":"package/aws-route53-patterns","keywords":["aws-route53-patterns","route53-patterns"],"labels":["package/aws-route53-patterns"]},
+            {"area":"package/aws-route53-targets","keywords":["aws-route53-targets","route53-targets"],"labels":["package/aws-route53-targets"]},
+            {"area":"package/aws-route53resolver","keywords":["aws-route53resolver","route53resolver"],"labels":["package/aws-route53resolver"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-s3","keywords":["bucket","aws-s3","s3"],"labels":["package/aws-s3"]},
+            {"area":"package/aws-s3-assets","keywords":["aws-s3-assets","s3-assets"],"labels":["package/aws-s3-assets"]},
+            {"area":"package/aws-s3-deployment","keywords":["aws-s3-deployment","s3-deployment"],"labels":["package/aws-s3-deployment"]},
+            {"area":"package/aws-s3-notifications","keywords":["aws-s3-notifications","s3-notifications"],"labels":["package/aws-s3-notifications"]},
+            {"area":"package/aws-s3objectlambda","keywords":["aws-s3objectlambda","s3objectlambda"],"labels":["package/aws-s3objectlambda"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-s3outposts","keywords":["aws-s3outposts","s3outposts"],"labels":["package/aws-s3outposts"]},
+            {"area":"package/aws-sagemaker","keywords":["aws-sagemaker","sagemaker"],"labels":["package/aws-sagemaker"]},
+            {"area":"package/aws-sam","keywords":["serverless-application-model","aws-sam","sam"],"labels":["package/aws-sam"]},
+            {"area":"package/aws-sdb","keywords":["simpledb","aws-sdb","sdb"],"labels":["package/aws-sdb"]},
+            {"area":"package/aws-secretsmanager","keywords":["secret","aws-secretsmanager","secrets-manager"],"labels":["package/aws-secretsmanager"]},
+            {"area":"package/aws-securityhub","keywords":["aws-securityhub","security-hub"],"labels":["package/aws-securityhub"]},
+            {"area":"package/aws-servicecatalog","keywords":["aws-servicecatalog","service-catalog"],"labels":["package/aws-servicecatalog"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-servicecatalogappregistry","keywords":["aws-servicecatalogappregistry","servicecatalogappregistry"],"labels":["package/aws-servicecatalogappregistry"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-servicediscovery","keywords":["aws-servicediscovery","servicediscovery"],"labels":["package/aws-servicediscovery"]},
+            {"area":"package/aws-ses","keywords":["receipt-filter","receipt-rule","aws-ses","ses"],"labels":["package/aws-ses"]},
+            {"area":"package/aws-ses-actions","keywords":["aws-ses-actions","ses-actions"],"labels":["package/aws-ses-actions"]},
+            {"area":"package/aws-signer","keywords":["aws-signer","signer"],"labels":["package/aws-signer"]},
+            {"area":"package/aws-sns","keywords":["simple-notification-service","aws-sns","sns","topic"],"labels":["package/aws-sns"]},
+            {"area":"package/aws-sns-subscriptions","keywords":["aws-sns-subscriptions","sns-subscriptions","subscription"],"labels":["package/aws-sns-subscriptions"]},
+            {"area":"package/aws-sqs","keywords":["queue","simple-queue-service","aws-sqs","sqs","fifo"],"labels":["package/aws-sqs"]},
+            {"area":"package/aws-ssm","keywords":["aws-ssm","ssm","systems-manager","stringparameter","stringlistparameter"],"labels":["package/aws-ssm"]},
+            {"area":"package/aws-sso","keywords":["aws-sso","sso","single-sign-on"],"labels":["package/aws-sso"]},
+            {"area":"package/aws-stepfunctions","keywords":["aws-stepfunctions","stepfunctions","statemachine", "chain"],"labels":["package/aws-stepfunctions"]},
+            {"area":"package/aws-stepfunctions-tasks","keywords":["aws-stepfunctions-tasks","stepfunctions-tasks"],"labels":["package/aws-stepfunctions-tasks"]},
+            {"area":"package/aws-synthetics","keywords":["aws-synthetics","synthetics", "canary"],"labels":["package/aws-synthetics"],"affixes":{"suffixes":["-alpha"]}},
+            {"area":"package/aws-timestream","keywords":["aws-timestream","timestream"],"labels":["package/aws-timestream"]},
+            {"area":"package/aws-transfer","keywords":["aws-transfer","transfer"],"labels":["package/aws-transfer"]},
+            {"area":"package/aws-waf","keywords":["waf","aws-waf","web-application-firewall"],"labels":["package/aws-waf"]},
+            {"area":"package/aws-wafregional","keywords":["aws-wafregional","wafregional","cfnwebacl"],"labels":["package/aws-wafregional"]},
+            {"area":"package/aws-wafv2","keywords":["wafv2","aws-wafv2"],"labels":["package/aws-wafv2"]},
+            {"area":"package/aws-workspaces","keywords":["aws-workspaces","workspaces"],"labels":["package/aws-workspaces"]},
+            {"area":"package/aws-xray","keywords":["aws-xray","xray"],"labels":["package/aws-xray"]},
+            {"area":"package/cfnspec","keywords":["cfnspec"],"labels":["package/cfnspec"]},
+            {"area":"package/cloud-assembly-schema","keywords":["cloud-assembly-schema","manifest"],"labels":["package/cloud-assembly-schema"]},
+            {"area":"package/cloudformation-diff","keywords":["cloudformation-diff","cfn-diff"],"labels":["package/cloudformation-diff"]},
+            {"area":"package/cloudformation-include","keywords":["cloudformation-include","cfn-include"],"labels":["package/cloudformation-include"]},
+            {"area":"package/core","keywords":["core","nested-stack","cross-account"],"labels":["package/core"]},
+            {"area":"package/custom-resources","keywords":["custom-resource","provider","custom-resources"],"labels":["package/custom-resources"]},
+            {"area":"package/cx-api","keywords":["cx-api","cloudartifact","cloudassembly"],"labels":["package/cx-api"]},
+            {"area":"package/aws-lambda-layer-awscli","keywords":["aws-lambda-layer-awscli","lambda-layer-awscli"],"labels":["package/aws-lambda-layer-awscli"]},
+            {"area":"package/aws-lambda-layer-kubectl","keywords":["aws-lambda-layer-kubectl","lambda-layer-kubectl"],"labels":["package/aws-lambda-layer-kubectl"]},
+            {"area":"package/pipelines","keywords":["pipelines","cdk-pipelines","sourceaction","synthaction"],"labels":["package/pipelines"]},
+            {"area":"package/region-info","keywords":["region-info"],"labels":["package/region-info"]},
+            {"area":"aws-cdk-lib","keywords":["aws-cdk-lib","cdk-v2","v2","ubergen"],"labels":["aws-cdk-lib"],"enableGlobalAffixes":false},
+            {"area":"monocdk","keywords":["monocdk","monocdk-experiment"],"labels":["monocdk"],"enableGlobalAffixes":false},
+            {"area":"package/yaml-cfn","keywords":["aws-yaml-cfn","yaml-cfn"],"labels":["package/aws-yaml-cfn"]},
+            {"area":"package/aws-lightsail","keywords":["lightsail","aws-lightsail"],"labels":["package/aws-lightsail"]},
+            {"area":"package/aws-aps","keywords":["aps","aws-aps","prometheus"],"labels":["package/aws-aps"]},
+            {"area":"package/triggers","keywords":["trigger","triggers"],"labels":["package/triggers"]},
+            {"area":"package/integ-tests","keywords":["integ-tests", "integ"],"labels":["package/integ-tests"]},
+            {"area":"package/integ-runner","keywords":["integ-runner"],"labels":["package/integ-runner"]},
+            {"area":"package/app-staging-synthesizer-alpha", "keywords":["app-staging-synthesizer", "app-staging-synthesizer-alpha"],"labels":["package/app-staging-synthesizer-alpha"]}
+          ]
