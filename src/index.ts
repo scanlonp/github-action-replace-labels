@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 
 async function run() {
   const token: string = core.getInput('github-token');
-  const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
+  //const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
   //const labelToReplace: string = core.getInput('label-to-replace');
   //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
 
@@ -17,8 +17,14 @@ async function run() {
 
 
   const octokit = github.getOctokit(token);
-  const repo = github.context.repo;
+  //const repo = github.context.repo;
 
+  await octokit.rest.issues.listLabelsForRepo({
+    owner: 'aws',
+    repo: 'aws-cdk',
+  });
+
+  /*
   for (const label in labelReplacement) {
     try {
       await updateLabel(label, labelReplacement[label]);
@@ -38,6 +44,7 @@ async function run() {
       new_name: newLabel,
     });
   }
+  */
 }
 
 
