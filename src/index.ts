@@ -24,7 +24,9 @@ async function run() {
     repo: repo.repo,
   });
 
-  console.log(allLabels);
+  const allLabelNames = allLabels.data.map(label => label.name);
+
+  console.log(allLabelNames);
 
   /*
   for (const label in labelReplacement) {
