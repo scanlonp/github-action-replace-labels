@@ -1,9 +1,10 @@
+import { EOL } from 'os';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
 async function run() {
   const token: string = core.getInput('github-token');
-  //const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
+  const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
   //const labelToReplace: string = core.getInput('label-to-replace');
   //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
 
@@ -27,6 +28,20 @@ async function run() {
   const allLabelNames = allLabels.data.map(label => label.name);
 
   console.log(allLabelNames);
+
+  const errors: string[] = [];
+
+  for (const label in labelReplacement) {
+    if (!(label in allLabelNames)) {
+      errors.push(`Label ${label} not found`);
+    } else {
+      console.log(`found label ${label}`);
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Some labels not found:${EOL}${errors.join(EOL)}`);
+  }
 
   /*
   for (const label in labelReplacement) {
