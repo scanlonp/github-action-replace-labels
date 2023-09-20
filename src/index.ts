@@ -17,11 +17,11 @@ async function run() {
 
 
   const octokit = github.getOctokit(token);
-  //const repo = github.context.repo;
+  const repo = github.context.repo;
 
   await octokit.rest.issues.listLabelsForRepo({
-    owner: 'aws',
-    repo: 'aws-cdk',
+    owner: repo.owner,
+    repo: repo.repo,
   });
 
   /*
