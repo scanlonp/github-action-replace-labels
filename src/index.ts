@@ -20,39 +20,10 @@ async function run() {
   const octokit = github.getOctokit(token);
   const repo = github.context.repo;
 
-  const allLabels = await octokit.rest.issues.listLabelsForRepo({
-    owner: repo.owner,
-    repo: repo.repo,
-  });
-
-  const allLabelNames = allLabels.data.map(label => label.name);
-
-  console.log(allLabelNames);
-
-  const errors: string[] = [];
+  await verifyLabels();
 
   for (const label in labelReplacement) {
-    if (!(allLabelNames.includes(label))) {
-      errors.push(`Label ${label} not found`);
-    }
-    if (allLabelNames.includes(labelReplacement[label])) {
-      errors.push(`Label ${labelReplacement[label]} already exists in repo`);
-    }
-  }
-
-  if (errors.length > 0) {
-    throw new Error(`Errors:${EOL}${errors.join(EOL)}`);
-  }
-
-  /*
-  for (const label in labelReplacement) {
-    try {
-      await updateLabel(label, labelReplacement[label]);
-    } catch (error) {
-      console.log(error);
-      console.log(typeof(error));
-      console.log();
-    }
+    await updateLabel(label, labelReplacement[label]);
   }
 
   async function updateLabel(label: string, newLabel: string) {
@@ -64,7 +35,31 @@ async function run() {
       new_name: newLabel,
     });
   }
-  */
+
+  async function verifyLabels(): Promise<void> {
+    const allLabels = await octokit.rest.issues.listLabelsForRepo({
+      owner: repo.owner,
+      repo: repo.repo,
+    });
+
+    const allLabelNames = allLabels.data.map(label => label.name);
+
+    //console.log(allLabelNames);
+
+    const errors: string[] = [];
+
+    for (const label in labelReplacement) {
+      if (!(allLabelNames.includes(label))) {
+        errors.push(`Label ${label} not found`);
+      }
+      if (allLabelNames.includes(labelReplacement[label])) {
+        errors.push(`Label ${labelReplacement[label]} already exists in repo`);
+      }
+    }
+    if (errors.length > 0) {
+      throw new Error(`Errors:${EOL}${errors.join(EOL)}`);
+    }
+  }
 }
 
 
