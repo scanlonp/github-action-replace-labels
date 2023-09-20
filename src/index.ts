@@ -32,7 +32,7 @@ async function run() {
   const errors: string[] = [];
 
   for (const label in labelReplacement) {
-    if (!(label in allLabelNames)) {
+    if (!(allLabelNames.includes(label))) {
       errors.push(`Label ${label} not found`);
     } else {
       console.log(`found label ${label}`);
