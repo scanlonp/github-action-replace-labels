@@ -219,5 +219,5 @@ jobs:
               "@aws-cdk/aws-lightsail": "aws-cdk-lib/aws-lightsail",
               "@aws-cdk/aws-aps": "aws-cdk-lib/aws-aps",
               "@aws-cdk/triggers": "aws-cdk-lib/triggers",
-              "@aws-cdk/integ-tests": "@aws-cdk/integ-tests-alpha",
+              "@aws-cdk/integ-tests": "@aws-cdk/integ-tests-alpha"
             }
