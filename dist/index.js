@@ -34,48 +34,45 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 async function run() {
     const token = core.getInput('github-token');
-    const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
+    //const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
     //const labelToReplace: string = core.getInput('label-to-replace');
     //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
     //console.log(labelToReplace, labelToReplaceWith);
-    if (token)
-        console.log('token exists');
-    console.log(labelReplacement);
+    //if (token) console.log('token exists');
+    //console.log(labelReplacement);
     //console.log(labelReplacement.a);
     const octokit = github.getOctokit(token);
     const repo = github.context.repo;
-    /*
-    await Object.keys(labelReplacement).forEach((label:string)=>{
-      await updateLabel(label, labelReplacement[label]);
+    await octokit.rest.issues.listLabelsForRepo({
+        owner: repo.owner,
+        repo: repo.repo,
     });
-    */
+    /*
     for (const label in labelReplacement) {
+      try {
         await updateLabel(label, labelReplacement[label]);
+      } catch (error) {
+        console.log(error);
+        console.log(typeof(error));
+        console.log();
+      }
     }
-    async function updateLabel(label, newLabel) {
-        console.log(`Updating label ${label} to ${newLabel}`);
-        await octokit.rest.issues.updateLabel({
-            owner: repo.owner,
-            repo: repo.repo,
-            name: label,
-            new_name: newLabel,
-        });
+  
+    async function updateLabel(label: string, newLabel: string) {
+      console.log(`Updating label ${label} to ${newLabel}`);
+      await octokit.rest.issues.updateLabel({
+        owner: repo.owner,
+        repo: repo.repo,
+        name: label,
+        new_name: newLabel,
+      });
     }
+    */
 }
-/**
- * Renders a TypeScript list based on what we expect the list to look like in yaml.
- * We expect to see something like "[item1,item2]". GitHub will return '' if the
- * input is not defined, so treating the empty string like undefined.
- */
-/*
-function renderListInput(rawInput: string): string[] {
-  return (rawInput === '' || rawInput === '[]') ? [] : rawInput.slice(1, -1).split(',');
-}
-*/
 run().catch(error => {
     core.setFailed(error.message);
 });
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLG9EQUFzQztBQUN0Qyx3REFBMEM7QUFFMUMsS0FBSyxVQUFVLEdBQUc7SUFDaEIsTUFBTSxLQUFLLEdBQVcsSUFBSSxDQUFDLFFBQVEsQ0FBQyxjQUFjLENBQUMsQ0FBQztJQUNwRCxNQUFNLGdCQUFnQixHQUFHLElBQUksQ0FBQyxLQUFLLENBQUMsSUFBSSxDQUFDLFFBQVEsQ0FBQyxtQkFBbUIsRUFBRSxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUUsQ0FBQyxDQUFDLENBQUM7SUFDNUYsbUVBQW1FO0lBQ25FLDRFQUE0RTtJQUU1RSxrREFBa0Q7SUFFbEQsSUFBSSxLQUFLO1FBQUUsT0FBTyxDQUFDLEdBQUcsQ0FBQyxjQUFjLENBQUMsQ0FBQztJQUV2QyxPQUFPLENBQUMsR0FBRyxDQUFDLGdCQUFnQixDQUFDLENBQUM7SUFFOUIsa0NBQWtDO0lBR2xDLE1BQU0sT0FBTyxHQUFHLE1BQU0sQ0FBQyxVQUFVLENBQUMsS0FBSyxDQUFDLENBQUM7SUFDekMsTUFBTSxJQUFJLEdBQUcsTUFBTSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUM7SUFFakM7Ozs7TUFJRTtJQUVGLEtBQUssTUFBTSxLQUFLLElBQUksZ0JBQWdCLEVBQUU7UUFDcEMsTUFBTSxXQUFXLENBQUMsS0FBSyxFQUFFLGdCQUFnQixDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUM7S0FDbkQ7SUFFRCxLQUFLLFVBQVUsV0FBVyxDQUFDLEtBQWEsRUFBRSxRQUFnQjtRQUN4RCxPQUFPLENBQUMsR0FBRyxDQUFDLGtCQUFrQixLQUFLLE9BQU8sUUFBUSxFQUFFLENBQUMsQ0FBQztRQUN0RCxNQUFNLE9BQU8sQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLFdBQVcsQ0FBQztZQUNwQyxLQUFLLEVBQUUsSUFBSSxDQUFDLEtBQUs7WUFDakIsSUFBSSxFQUFFLElBQUksQ0FBQyxJQUFJO1lBQ2YsSUFBSSxFQUFFLEtBQUs7WUFDWCxRQUFRLEVBQUUsUUFBUTtTQUNuQixDQUFDLENBQUM7SUFDTCxDQUFDO0FBQ0gsQ0FBQztBQUdEOzs7O0dBSUc7QUFDSDs7OztFQUlFO0FBR0YsR0FBRyxFQUFFLENBQUMsS0FBSyxDQUFDLEtBQUssQ0FBQyxFQUFFO0lBQ2xCLElBQUksQ0FBQyxTQUFTLENBQUMsS0FBSyxDQUFDLE9BQU8sQ0FBQyxDQUFDO0FBQ2hDLENBQUMsQ0FBQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0ICogYXMgY29yZSBmcm9tICdAYWN0aW9ucy9jb3JlJztcbmltcG9ydCAqIGFzIGdpdGh1YiBmcm9tICdAYWN0aW9ucy9naXRodWInO1xuXG5hc3luYyBmdW5jdGlvbiBydW4oKSB7XG4gIGNvbnN0IHRva2VuOiBzdHJpbmcgPSBjb3JlLmdldElucHV0KCdnaXRodWItdG9rZW4nKTtcbiAgY29uc3QgbGFiZWxSZXBsYWNlbWVudCA9IEpTT04ucGFyc2UoY29yZS5nZXRJbnB1dCgnbGFiZWwtcmVwbGFjZW1lbnQnLCB7IHJlcXVpcmVkOiB0cnVlIH0pKTtcbiAgLy9jb25zdCBsYWJlbFRvUmVwbGFjZTogc3RyaW5nID0gY29yZS5nZXRJbnB1dCgnbGFiZWwtdG8tcmVwbGFjZScpO1xuICAvL2NvbnN0IGxhYmVsVG9SZXBsYWNlV2l0aDogc3RyaW5nID0gY29yZS5nZXRJbnB1dCgnbGFiZWwtdG8tcmVwbGFjZS13aXRoJyk7XG5cbiAgLy9jb25zb2xlLmxvZyhsYWJlbFRvUmVwbGFjZSwgbGFiZWxUb1JlcGxhY2VXaXRoKTtcblxuICBpZiAodG9rZW4pIGNvbnNvbGUubG9nKCd0b2tlbiBleGlzdHMnKTtcblxuICBjb25zb2xlLmxvZyhsYWJlbFJlcGxhY2VtZW50KTtcblxuICAvL2NvbnNvbGUubG9nKGxhYmVsUmVwbGFjZW1lbnQuYSk7XG5cblxuICBjb25zdCBvY3Rva2l0ID0gZ2l0aHViLmdldE9jdG9raXQodG9rZW4pO1xuICBjb25zdCByZXBvID0gZ2l0aHViLmNvbnRleHQucmVwbztcblxuICAvKlxuICBhd2FpdCBPYmplY3Qua2V5cyhsYWJlbFJlcGxhY2VtZW50KS5mb3JFYWNoKChsYWJlbDpzdHJpbmcpPT57XG4gICAgYXdhaXQgdXBkYXRlTGFiZWwobGFiZWwsIGxhYmVsUmVwbGFjZW1lbnRbbGFiZWxdKTtcbiAgfSk7XG4gICovXG5cbiAgZm9yIChjb25zdCBsYWJlbCBpbiBsYWJlbFJlcGxhY2VtZW50KSB7XG4gICAgYXdhaXQgdXBkYXRlTGFiZWwobGFiZWwsIGxhYmVsUmVwbGFjZW1lbnRbbGFiZWxdKTtcbiAgfVxuXG4gIGFzeW5jIGZ1bmN0aW9uIHVwZGF0ZUxhYmVsKGxhYmVsOiBzdHJpbmcsIG5ld0xhYmVsOiBzdHJpbmcpIHtcbiAgICBjb25zb2xlLmxvZyhgVXBkYXRpbmcgbGFiZWwgJHtsYWJlbH0gdG8gJHtuZXdMYWJlbH1gKTtcbiAgICBhd2FpdCBvY3Rva2l0LnJlc3QuaXNzdWVzLnVwZGF0ZUxhYmVsKHtcbiAgICAgIG93bmVyOiByZXBvLm93bmVyLFxuICAgICAgcmVwbzogcmVwby5yZXBvLFxuICAgICAgbmFtZTogbGFiZWwsXG4gICAgICBuZXdfbmFtZTogbmV3TGFiZWwsXG4gICAgfSk7XG4gIH1cbn1cblxuXG4vKipcbiAqIFJlbmRlcnMgYSBUeXBlU2NyaXB0IGxpc3QgYmFzZWQgb24gd2hhdCB3ZSBleHBlY3QgdGhlIGxpc3QgdG8gbG9vayBsaWtlIGluIHlhbWwuXG4gKiBXZSBleHBlY3QgdG8gc2VlIHNvbWV0aGluZyBsaWtlIFwiW2l0ZW0xLGl0ZW0yXVwiLiBHaXRIdWIgd2lsbCByZXR1cm4gJycgaWYgdGhlXG4gKiBpbnB1dCBpcyBub3QgZGVmaW5lZCwgc28gdHJlYXRpbmcgdGhlIGVtcHR5IHN0cmluZyBsaWtlIHVuZGVmaW5lZC5cbiAqL1xuLypcbmZ1bmN0aW9uIHJlbmRlckxpc3RJbnB1dChyYXdJbnB1dDogc3RyaW5nKTogc3RyaW5nW10ge1xuICByZXR1cm4gKHJhd0lucHV0ID09PSAnJyB8fCByYXdJbnB1dCA9PT0gJ1tdJykgPyBbXSA6IHJhd0lucHV0LnNsaWNlKDEsIC0xKS5zcGxpdCgnLCcpO1xufVxuKi9cblxuXG5ydW4oKS5jYXRjaChlcnJvciA9PiB7XG4gIGNvcmUuc2V0RmFpbGVkKGVycm9yLm1lc3NhZ2UpO1xufSk7Il19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLG9EQUFzQztBQUN0Qyx3REFBMEM7QUFFMUMsS0FBSyxVQUFVLEdBQUc7SUFDaEIsTUFBTSxLQUFLLEdBQVcsSUFBSSxDQUFDLFFBQVEsQ0FBQyxjQUFjLENBQUMsQ0FBQztJQUNwRCw4RkFBOEY7SUFDOUYsbUVBQW1FO0lBQ25FLDRFQUE0RTtJQUU1RSxrREFBa0Q7SUFFbEQseUNBQXlDO0lBRXpDLGdDQUFnQztJQUVoQyxrQ0FBa0M7SUFHbEMsTUFBTSxPQUFPLEdBQUcsTUFBTSxDQUFDLFVBQVUsQ0FBQyxLQUFLLENBQUMsQ0FBQztJQUN6QyxNQUFNLElBQUksR0FBRyxNQUFNLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQztJQUVqQyxNQUFNLE9BQU8sQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLGlCQUFpQixDQUFDO1FBQzFDLEtBQUssRUFBRSxJQUFJLENBQUMsS0FBSztRQUNqQixJQUFJLEVBQUUsSUFBSSxDQUFDLElBQUk7S0FDaEIsQ0FBQyxDQUFDO0lBRUg7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O01Bb0JFO0FBQ0osQ0FBQztBQUdELEdBQUcsRUFBRSxDQUFDLEtBQUssQ0FBQyxLQUFLLENBQUMsRUFBRTtJQUNsQixJQUFJLENBQUMsU0FBUyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsQ0FBQztBQUNoQyxDQUFDLENBQUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCAqIGFzIGNvcmUgZnJvbSAnQGFjdGlvbnMvY29yZSc7XG5pbXBvcnQgKiBhcyBnaXRodWIgZnJvbSAnQGFjdGlvbnMvZ2l0aHViJztcblxuYXN5bmMgZnVuY3Rpb24gcnVuKCkge1xuICBjb25zdCB0b2tlbjogc3RyaW5nID0gY29yZS5nZXRJbnB1dCgnZ2l0aHViLXRva2VuJyk7XG4gIC8vY29uc3QgbGFiZWxSZXBsYWNlbWVudCA9IEpTT04ucGFyc2UoY29yZS5nZXRJbnB1dCgnbGFiZWwtcmVwbGFjZW1lbnQnLCB7IHJlcXVpcmVkOiB0cnVlIH0pKTtcbiAgLy9jb25zdCBsYWJlbFRvUmVwbGFjZTogc3RyaW5nID0gY29yZS5nZXRJbnB1dCgnbGFiZWwtdG8tcmVwbGFjZScpO1xuICAvL2NvbnN0IGxhYmVsVG9SZXBsYWNlV2l0aDogc3RyaW5nID0gY29yZS5nZXRJbnB1dCgnbGFiZWwtdG8tcmVwbGFjZS13aXRoJyk7XG5cbiAgLy9jb25zb2xlLmxvZyhsYWJlbFRvUmVwbGFjZSwgbGFiZWxUb1JlcGxhY2VXaXRoKTtcblxuICAvL2lmICh0b2tlbikgY29uc29sZS5sb2coJ3Rva2VuIGV4aXN0cycpO1xuXG4gIC8vY29uc29sZS5sb2cobGFiZWxSZXBsYWNlbWVudCk7XG5cbiAgLy9jb25zb2xlLmxvZyhsYWJlbFJlcGxhY2VtZW50LmEpO1xuXG5cbiAgY29uc3Qgb2N0b2tpdCA9IGdpdGh1Yi5nZXRPY3Rva2l0KHRva2VuKTtcbiAgY29uc3QgcmVwbyA9IGdpdGh1Yi5jb250ZXh0LnJlcG87XG5cbiAgYXdhaXQgb2N0b2tpdC5yZXN0Lmlzc3Vlcy5saXN0TGFiZWxzRm9yUmVwbyh7XG4gICAgb3duZXI6IHJlcG8ub3duZXIsXG4gICAgcmVwbzogcmVwby5yZXBvLFxuICB9KTtcblxuICAvKlxuICBmb3IgKGNvbnN0IGxhYmVsIGluIGxhYmVsUmVwbGFjZW1lbnQpIHtcbiAgICB0cnkge1xuICAgICAgYXdhaXQgdXBkYXRlTGFiZWwobGFiZWwsIGxhYmVsUmVwbGFjZW1lbnRbbGFiZWxdKTtcbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgY29uc29sZS5sb2coZXJyb3IpO1xuICAgICAgY29uc29sZS5sb2codHlwZW9mKGVycm9yKSk7XG4gICAgICBjb25zb2xlLmxvZygpO1xuICAgIH1cbiAgfVxuXG4gIGFzeW5jIGZ1bmN0aW9uIHVwZGF0ZUxhYmVsKGxhYmVsOiBzdHJpbmcsIG5ld0xhYmVsOiBzdHJpbmcpIHtcbiAgICBjb25zb2xlLmxvZyhgVXBkYXRpbmcgbGFiZWwgJHtsYWJlbH0gdG8gJHtuZXdMYWJlbH1gKTtcbiAgICBhd2FpdCBvY3Rva2l0LnJlc3QuaXNzdWVzLnVwZGF0ZUxhYmVsKHtcbiAgICAgIG93bmVyOiByZXBvLm93bmVyLFxuICAgICAgcmVwbzogcmVwby5yZXBvLFxuICAgICAgbmFtZTogbGFiZWwsXG4gICAgICBuZXdfbmFtZTogbmV3TGFiZWwsXG4gICAgfSk7XG4gIH1cbiAgKi9cbn1cblxuXG5ydW4oKS5jYXRjaChlcnJvciA9PiB7XG4gIGNvcmUuc2V0RmFpbGVkKGVycm9yLm1lc3NhZ2UpO1xufSk7Il19
 
 /***/ }),
 
