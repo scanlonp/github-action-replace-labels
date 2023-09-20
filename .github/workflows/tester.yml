@@ -17,5 +17,5 @@ jobs:
               "@aws-cdk/core": "core",
               "beotch": "mmm",
               "hello": "world",
-              "wontfix": "invalid"
+              "wontfax": "invalid"
             }
