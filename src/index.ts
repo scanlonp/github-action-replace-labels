@@ -5,17 +5,6 @@ import * as github from '@actions/github';
 async function run() {
   const token: string = core.getInput('github-token');
   const labelReplacement = JSON.parse(core.getInput('label-replacement', { required: true }));
-  //const labelToReplace: string = core.getInput('label-to-replace');
-  //const labelToReplaceWith: string = core.getInput('label-to-replace-with');
-
-  //console.log(labelToReplace, labelToReplaceWith);
-
-  //if (token) console.log('token exists');
-
-  //console.log(labelReplacement);
-
-  //console.log(labelReplacement.a);
-
 
   const octokit = github.getOctokit(token);
   const repo = github.context.repo;
@@ -43,8 +32,6 @@ async function run() {
     });
 
     const allLabelNames = allLabels.data.map(label => label.name);
-
-    //console.log(allLabelNames);
 
     const errors: string[] = [];
 
